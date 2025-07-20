@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { motion } from "framer-motion";
 import { Accessibility, Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -23,6 +24,7 @@ export default function Header({
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAccessibility, setShowAccessibility] = useState(false);
+  const [showAccessibilitySheet, setShowAccessibilitySheet] = useState(false);
 
   const navItems = [
     { name: "Home", href: "#home" },
@@ -95,16 +97,69 @@ export default function Header({
               )}
             </Button>
 
-            {/* Accessibility Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowAccessibility(!showAccessibility)}
-              className="text-slate-300 hover:text-white"
-            >
-              <Accessibility className="w-5 h-5" />
-            </Button>
-
+            {/* Accessibility Toggle - icon only on mobile */}
+            <div className="block md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAccessibilitySheet(true)}
+                className="text-slate-300 hover:text-white"
+              >
+                <Accessibility className="w-5 h-5" />
+              </Button>
+              <Sheet
+                open={showAccessibilitySheet}
+                onOpenChange={setShowAccessibilitySheet}
+              >
+                <SheetContent side="bottom" className="p-0 max-w-full w-full">
+                  <div className="p-4">
+                    <h3 className="text-sm font-semibold mb-3 text-white">
+                      Accessibility Options
+                    </h3>
+                    <div className="space-y-2">
+                      {[
+                        { key: "highContrast", label: "High Contrast" },
+                        { key: "dyslexiaFriendly", label: "Dyslexia Friendly" },
+                        { key: "largeText", label: "Large Text" },
+                        { key: "reducedMotion", label: "Reduced Motion" },
+                      ].map((option) => (
+                        <label
+                          key={option.key}
+                          className="flex items-center space-x-2 text-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={
+                              accessibilityMode[
+                                option.key as keyof typeof accessibilityMode
+                              ]
+                            }
+                            onChange={(e) =>
+                              setAccessibilityMode({
+                                ...accessibilityMode,
+                                [option.key]: e.target.checked,
+                              })
+                            }
+                            className="rounded"
+                          />
+                          <span className="text-slate-300">{option.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+            <div className="hidden md:block">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAccessibility(!showAccessibility)}
+                className="text-slate-300 hover:text-white"
+              >
+                <Accessibility className="w-5 h-5" />
+              </Button>
+            </div>
             {/* Mobile Menu Toggle */}
             <Button
               variant="ghost"
@@ -143,10 +198,10 @@ export default function Header({
           </motion.nav>
         )}
 
-        {/* Accessibility Panel */}
+        {/* Accessibility Panel for desktop only */}
         {showAccessibility && (
           <motion.div
-            className="absolute top-full right-4 mt-2 bg-black/90 backdrop-blur-md border border-white/10 rounded-lg p-4 w-64"
+            className="absolute top-full right-4 mt-2 bg-black/90 backdrop-blur-md border border-white/10 rounded-lg p-4 w-64 hidden md:block"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >

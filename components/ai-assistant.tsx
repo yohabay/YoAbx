@@ -109,9 +109,42 @@ export default function AIAssistant() {
         // Show Gemini's summary response as-is (no line limit)
         responseText = data.candidates[0].content.parts[0].text;
       } else if (data.error) {
-        responseText = `Gemini API error: ${
-          data.error.message || JSON.stringify(data.error)
-        }`;
+        // Friendly error for quota/rate limit
+        if (
+          data.error.message &&
+          (data.error.message.includes("quota") ||
+            data.error.message.includes("rate limit"))
+        ) {
+          responseText =
+            "I'm a bit busy today! Could we arrange to chat tomorrow?";
+          const botMessage: Message = {
+            id: messages.length + 2,
+            text: responseText,
+            sender: "bot",
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, botMessage]);
+
+          // Add a follow-up message with a time-based greeting
+          const hour = new Date().getHours();
+          let greeting = "Have a good day!";
+          if (hour < 5) greeting = "Have a good night!";
+          else if (hour < 12) greeting = "Have a great morning!";
+          else if (hour < 18) greeting = "Have a wonderful afternoon!";
+          else greeting = "Have a pleasant evening!";
+          const followUp: Message = {
+            id: messages.length + 3,
+            text: greeting,
+            sender: "bot",
+            timestamp: new Date(),
+          };
+          setTimeout(() => setMessages((prev) => [...prev, followUp]), 1200);
+          return;
+        } else {
+          responseText = `Gemini API error: ${
+            data.error.message || JSON.stringify(data.error)
+          }`;
+        }
       }
       const botMessage: Message = {
         id: messages.length + 2,
