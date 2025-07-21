@@ -1,26 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Globe, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown, Globe } from "lucide-react";
+import { useState } from "react";
 
 const languages = [
   { code: "en", name: "English", flag: "🇺🇸" },
-  { code: "es", name: "Español", flag: "🇪🇸" },
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "de", name: "Deutsch", flag: "🇩🇪" },
-  { code: "zh", name: "中文", flag: "🇨🇳" },
-  { code: "ja", name: "日本語", flag: "🇯🇵" },
-  { code: "ko", name: "한국어", flag: "🇰🇷" },
-  { code: "pt", name: "Português", flag: "🇵🇹" },
-]
+  // { code: "es", name: "Español", flag: "🇪🇸" },
+  // { code: "fr", name: "Français", flag: "🇫🇷" },
+  // { code: "de", name: "Deutsch", flag: "🇩🇪" },
+  // { code: "zh", name: "中文", flag: "🇨🇳" },
+  // { code: "ja", name: "日本語", flag: "🇯🇵" },
+  // { code: "ko", name: "한국어", flag: "🇰🇷" },
+  // { code: "pt", name: "Português", flag: "🇵🇹" },
+];
 
 const translations = {
   en: {
     title: "Frontend & Flutter Developer",
-    subtitle: "Crafting immersive digital experiences with cutting-edge technology",
+    subtitle:
+      "Crafting immersive digital experiences with cutting-edge technology",
     projects: "Interactive Project Explorer",
     skills: "Skills & Expertise",
     blog: "Technical Blog & Tutorials",
@@ -28,7 +29,8 @@ const translations = {
   },
   es: {
     title: "Desarrollador Frontend y Flutter",
-    subtitle: "Creando experiencias digitales inmersivas con tecnología de vanguardia",
+    subtitle:
+      "Creando experiencias digitales inmersivas con tecnología de vanguardia",
     projects: "Explorador Interactivo de Proyectos",
     skills: "Habilidades y Experiencia",
     blog: "Blog Técnico y Tutoriales",
@@ -36,7 +38,8 @@ const translations = {
   },
   fr: {
     title: "Développeur Frontend et Flutter",
-    subtitle: "Créer des expériences numériques immersives avec une technologie de pointe",
+    subtitle:
+      "Créer des expériences numériques immersives avec une technologie de pointe",
     projects: "Explorateur de Projets Interactif",
     skills: "Compétences et Expertise",
     blog: "Blog Technique et Tutoriels",
@@ -44,7 +47,8 @@ const translations = {
   },
   de: {
     title: "Frontend & Flutter Entwickler",
-    subtitle: "Immersive digitale Erlebnisse mit modernster Technologie schaffen",
+    subtitle:
+      "Immersive digitale Erlebnisse mit modernster Technologie schaffen",
     projects: "Interaktiver Projekt-Explorer",
     skills: "Fähigkeiten & Expertise",
     blog: "Technischer Blog & Tutorials",
@@ -58,39 +62,43 @@ const translations = {
     blog: "技术博客与教程",
     contact: "让我们合作",
   },
-}
+};
 
 export default function MultiLanguageToggle() {
-  const [currentLang, setCurrentLang] = useState("en")
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [isTranslating, setIsTranslating] = useState(false)
+  const [currentLang, setCurrentLang] = useState("en");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   const translateContent = async (targetLang: string) => {
-    if (targetLang === currentLang) return
+    if (targetLang === currentLang) return;
 
-    setIsTranslating(true)
+    setIsTranslating(true);
 
     // Simulate translation API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Apply translations to the page
-    const elements = document.querySelectorAll("[data-translate]")
+    const elements = document.querySelectorAll("[data-translate]");
     elements.forEach((element) => {
-      const key = element.getAttribute("data-translate")
+      const key = element.getAttribute("data-translate");
       if (key && translations[targetLang as keyof typeof translations]) {
-        const translation = translations[targetLang as keyof typeof translations][key as keyof typeof translations.en]
+        const translation =
+          translations[targetLang as keyof typeof translations][
+            key as keyof typeof translations.en
+          ];
         if (translation) {
-          element.textContent = translation
+          element.textContent = translation;
         }
       }
-    })
+    });
 
-    setCurrentLang(targetLang)
-    setIsTranslating(false)
-    setShowDropdown(false)
-  }
+    setCurrentLang(targetLang);
+    setIsTranslating(false);
+    setShowDropdown(false);
+  };
 
-  const currentLanguage = languages.find((lang) => lang.code === currentLang) || languages[0]
+  const currentLanguage =
+    languages.find((lang) => lang.code === currentLang) || languages[0];
 
   return (
     <>
@@ -108,7 +116,11 @@ export default function MultiLanguageToggle() {
           <Globe className="w-4 h-4 mr-2" />
           <span className="mr-1">{currentLanguage.flag}</span>
           <span className="mr-2">{currentLanguage.name}</span>
-          <ChevronDown className={`w-4 h-4 transition-transform ${showDropdown ? "rotate-180" : ""}`} />
+          <ChevronDown
+            className={`w-4 h-4 transition-transform ${
+              showDropdown ? "rotate-180" : ""
+            }`}
+          />
         </Button>
 
         {/* Translation Status */}
@@ -124,7 +136,11 @@ export default function MultiLanguageToggle() {
                 <motion.div
                   className="w-3 h-3 border-2 border-blue-400/30 border-t-blue-400 rounded-full"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                  transition={{
+                    duration: 1,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "linear",
+                  }}
                 />
                 <span className="text-blue-300 text-sm">Translating...</span>
               </div>
@@ -175,5 +191,5 @@ export default function MultiLanguageToggle() {
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }
